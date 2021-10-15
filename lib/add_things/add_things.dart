@@ -50,7 +50,7 @@ class _AddThingsPageState extends State<AddThingsPage> {
     Timer(
         Duration(milliseconds: 100),
         () => _scrollController.animateTo(
-              _scrollController.position.minScrollExtent,
+              _scrollController.position.maxScrollExtent,
               curve: Curves.easeOut,
               duration: const Duration(milliseconds: 200),
             ));
@@ -117,19 +117,19 @@ class _AddThingsPageState extends State<AddThingsPage> {
                   color: !isError ? Colors.black : Colors.red),
             ),
           ),
-          Expanded(
+          Flexible(
             child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(8),
                 scrollDirection: Axis.vertical,
-                //shrinkWrap: true,
-                //reverse: true,
+                shrinkWrap: true,
+                reverse: true,
                 itemCount: history.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child:
-                        SelectableText(history[(history.length - 1) - index]),
+                        SelectableText(history[index]),
                   );
                 }),
           )
