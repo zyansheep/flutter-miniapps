@@ -1,7 +1,5 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class AddThingsPage extends StatefulWidget {
@@ -14,6 +12,7 @@ class AddThingsPage extends StatefulWidget {
 /// This is the private State class that goes with AddThingsPage.
 class _AddThingsPageState extends State<AddThingsPage> {
   late TextEditingController _controller;
+  String? answer;
 
   @override
   void initState() {
@@ -42,6 +41,11 @@ class _AddThingsPageState extends State<AddThingsPage> {
               controller: _controller,
               onChanged: (String expression) async {
                 setState(() {
+                  Parser p = Parser();
+                  Expression exp = p.parse(expression);
+                  var eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+                  answer = "${exp.simplify().toString()} = ${eval.toString()}";
+
                   /* Expression exp = Parser.parse(expression); */
                 });
               },
@@ -66,6 +70,11 @@ class _AddThingsPageState extends State<AddThingsPage> {
                 ); */
               }, */
             ),
+            SelectableText(
+              answer ?? "Invalid Expression",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )
           ],
         ),
       ),
