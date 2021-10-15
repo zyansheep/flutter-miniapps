@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'package:mobile_disco/tools/shake_widget.dart';
+import 'package:miniapps/tools/shake_widget.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class AddThingsPage extends StatefulWidget {

@@ -1,4 +1,4 @@
-# mobile_disco
+# miniapps
 
 A new Flutter project.
 

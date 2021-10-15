@@ -1,4 +1,4 @@
-package com.example.mobile_disco
+package com.example.miniapps
 
 import io.flutter.embedding.android.FlutterActivity
 

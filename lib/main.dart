@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_disco/mobile_disco/mobile_disco.dart';
+import 'package:miniapps/mobile_disco/mobile_disco.dart';
 
 import 'add_things/add_things.dart';
 
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Geeks for Geeks'),
+        title: Text('Mini Apps'),
         backgroundColor: Colors.green,
       ),
       body: Center(
