@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:mobile_disco/tools/shake_widget.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class AddThingsPage extends StatefulWidget {
@@ -13,6 +16,21 @@ class AddThingsPage extends StatefulWidget {
 class _AddThingsPageState extends State<AddThingsPage> {
   late TextEditingController _controller;
   String? answer;
+  bool isError = false;
+
+  List<String> history = <String>[];
+
+  // Auto scroll-up logic
+  final ScrollController _scrollController = ScrollController();
+
+  /* bool _needsScroll = false;
+  _scrollToEnd() async {
+    _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
+  } */
+
+  final shakeKey = GlobalKey<ShakeWidgetState>();
+  final textShakeKey = GlobalKey<ShakeWidgetState>();
 
   @override
   void initState() {
@@ -28,55 +46,94 @@ class _AddThingsPageState extends State<AddThingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Kinda hacky, delaying the scroll until after widget update
+    Timer(
+        Duration(milliseconds: 100),
+        () => _scrollController.animateTo(
+              _scrollController.position.minScrollExtent,
+              curve: Curves.easeOut,
+              duration: const Duration(milliseconds: 200),
+            ));
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MobileDiscoPage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("Mobile Disco"),
+        title: Text("Add Things"),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
+      body: Column(
+        children: [
+          ShakeWidget(
+            key: shakeKey,
+            shakeCount: 2,
+            shakeOffset: 3,
+            shakeDuration: Duration(milliseconds: 200),
+            child: TextField(
+              autofocus: true,
+              textInputAction:
+                  TextInputAction.none, // Stay focused on text field
               controller: _controller,
               onChanged: (String expression) async {
                 setState(() {
-                  Parser p = Parser();
-                  Expression exp = p.parse(expression);
-                  var eval = exp.evaluate(EvaluationType.REAL, ContextModel());
-                  answer = "${exp.simplify().toString()} = ${eval.toString()}";
-
-                  /* Expression exp = Parser.parse(expression); */
+                  try {
+                    Parser p = Parser();
+                    Expression exp = p.parse(expression);
+                    var eval =
+                        exp.evaluate(EvaluationType.REAL, ContextModel());
+                    answer = "${exp.toString()} = ${eval.toString()}";
+                    isError = false;
+                  } catch (e) {
+                    answer = e.toString();
+                    isError = true;
+                  }
                 });
               },
-              /* onSubmitted: (String value) async {
-                /* await showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Thanks!'),
-                      content: Text(
-                          'You typed "$value", which has length ${value.characters.length}.'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                ); */
-              }, */
+              onSubmitted: (String value) async {
+                setState(() {
+                  if (history.isNotEmpty && history.last == answer) {
+                  } else if (answer != null && !isError) {
+                    history.add(answer!);
+                    //_needsScroll = true;
+                  } else {
+                    setState(() {
+                      shakeKey.currentState?.shake();
+                      textShakeKey.currentState?.shake();
+                    });
+                  }
+                });
+              },
             ),
-            SelectableText(
+          ),
+          ShakeWidget(
+            key: textShakeKey,
+            shakeCount: 2,
+            shakeOffset: 3,
+            shakeDuration: Duration(milliseconds: 200),
+            child: SelectableText(
               answer ?? "Invalid Expression",
               textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )
-          ],
-        ),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: !isError ? Colors.black : Colors.red),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(8),
+                scrollDirection: Axis.vertical,
+                //shrinkWrap: true,
+                //reverse: true,
+                itemCount: history.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child:
+                        SelectableText(history[(history.length - 1) - index]),
+                  );
+                }),
+          )
+        ],
       ),
     );
   }
