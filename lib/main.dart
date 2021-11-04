@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:miniapps/mobile_disco/mobile_disco.dart';
+import 'package:flutter/rendering.dart';
 
+import 'mobile_disco/mobile_disco.dart';
 import 'add_things/add_things.dart';
+import 'auto_survey/auto_survey.dart';
 
 void main() {
 	runApp(MyApp());
@@ -11,6 +13,8 @@ class MyApp extends StatelessWidget {
 	// This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // debugPaintSizeEnabled = true;
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -29,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(),
         '/mobile_disco': (context) => MobileDiscoPage(),
         '/add_things': (context) => AddThingsPage(),
+        '/auto_survey': (context) => AutoSurveyPage(),
       },
       /* home: MobileDiscoPage(title: 'Flutter Demo Home Page'), */
     );
@@ -57,6 +62,12 @@ class HomePage extends StatelessWidget {
             child: Text('Add Things'),
             onPressed: () {
               Navigator.pushNamed(context, '/add_things');
+            },
+          ),
+          ElevatedButton(
+            child: Text('Auto Survey'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/auto_survey');
             },
           ),
         ],
