@@ -30,12 +30,14 @@ class AutoSurveyPage extends StatelessWidget {
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w100)),
                   fit: BoxFit.contain),
-              Divider(),
+              Divider(
+                color: Color.fromARGB(255, 128, 128, 128),
+              ),
               FittedBox(
                 child: Text(
                   dateFormat.format(DateTime.now()),
                   style: TextStyle(
-                      fontSize: 60,
+                      fontSize: 45,
                       color: Color.fromARGB(255, 64, 64, 64),
                       fontFamily: 'Lato',
                       fontWeight: FontWeight.w400),
@@ -47,12 +49,16 @@ class AutoSurveyPage extends StatelessWidget {
                 fit: BoxFit.contain,
                 width: double.infinity,
               ),
+              SizedBox(height: 100),
               FittedBox(
                   child: RichText(
                       text: TextSpan(children: [
                     TextSpan(
                         text: 'Return to ',
-                        style: TextStyle(fontSize: 30, fontFamily: 'Lato')),
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Lato',
+                            color: Color.fromARGB(255, 0, 0, 0))),
                     TextSpan(
                         text: "testalerts.com",
                         style: TextStyle(
@@ -61,7 +67,10 @@ class AutoSurveyPage extends StatelessWidget {
                             fontFamily: 'Lato')),
                     TextSpan(
                         text: ' .',
-                        style: TextStyle(fontSize: 30, fontFamily: 'Lato')),
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontFamily: 'Lato',
+                            color: Color.fromARGB(255, 0, 0, 0))),
                   ])),
                   fit: BoxFit.contain)
             ],

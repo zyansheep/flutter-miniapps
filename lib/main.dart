@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     // debugPaintSizeEnabled = true;
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Miniapps',
       theme: ThemeData(
         // This is the theme of your application.
         //
