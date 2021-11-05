@@ -19,7 +19,7 @@
 				flutter
 				dart
 				android-studio
-				jdk
+				jdk11
 				git
 				chromium
 			];
