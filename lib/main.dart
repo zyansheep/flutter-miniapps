@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'mobile_disco/mobile_disco.dart';
 import 'add_things/add_things.dart';
 import 'auto_survey/auto_survey.dart';
+import 'categorizer/categorizer.dart';
 
 void main() {
-	runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-	// This widget is the root of your application.
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     // debugPaintSizeEnabled = true;
@@ -34,12 +35,12 @@ class MyApp extends StatelessWidget {
         '/mobile_disco': (context) => MobileDiscoPage(),
         '/add_things': (context) => AddThingsPage(),
         '/auto_survey': (context) => AutoSurveyPage(),
+        '/categorizer': (context) => Categorizer(),
       },
       /* home: MobileDiscoPage(title: 'Flutter Demo Home Page'), */
     );
   }
 }
-
 
 class HomePage extends StatelessWidget {
   @override
@@ -68,6 +69,12 @@ class HomePage extends StatelessWidget {
             child: Text('Auto Survey'),
             onPressed: () {
               Navigator.pushNamed(context, '/auto_survey');
+            },
+          ),
+          ElevatedButton(
+            child: Text('Image Categorizer'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/categorizer');
             },
           ),
         ],
