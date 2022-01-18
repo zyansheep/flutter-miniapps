@@ -1,6 +1,4 @@
-import 'dart:collection';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
@@ -8,10 +6,9 @@ import 'package:flame/game.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
-import 'package:flame/src/geometry/shape.dart';
 import 'package:flutter/material.dart';
 
-class EadotGame extends FlameGame with MouseMovementDetector, HasCollidables {
+class EadotGame extends FlameGame with MouseMovementDetector {
   static const String description = '''
     In this example we show how you can use `MouseMovementDetector`.\n\n
     Move around the mouse on the canvas and the white square will follow it and
@@ -24,11 +21,12 @@ class EadotGame extends FlameGame with MouseMovementDetector, HasCollidables {
 
   late Timer dotSpawner;
   late PlayerDot player;
+  int highScore = 0;
 
   @override
   Future<void> onLoad() async {
     this.player = PlayerDot(5);
-    debugMode = true;
+    //debugMode = true;
     this.dotSpawner = Timer(
       0.5,
       onTick: () =>
@@ -46,18 +44,44 @@ class EadotGame extends FlameGame with MouseMovementDetector, HasCollidables {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    scoreText.render(canvas, "Size: ${player.playerSize}", Vector2(30, 30));
-    scoreText.render(canvas, "Num: ${this.children.length}", Vector2(30, 60));
+    scoreText.render(canvas, "Score: ${player.playerSize}", Vector2(30, 30));
+    scoreText.render(canvas, "Highscore: ${this.highScore}", Vector2(30, 60));
   }
+
+  bool shouldReset = false;
 
   @override
   void update(double dt) {
     super.update(dt);
+    if (shouldReset) {
+      if (player.playerSize != 5) {
+        this.highScore = player.playerSize;
+      }
+      removeAll(this.children);
+      this.player = PlayerDot(5);
+      add(this.player);
+      shouldReset = false;
+    }
+
     this.dotSpawner.update(dt);
+    for (var child in this.children) {
+      if (child is Dot) {
+        var combinedRadii = player.playerSize * player.playerSize +
+            child.dotSize * child.dotSize;
+        if (child.position.distanceToSquared(player.position) < combinedRadii) {
+          if (child.dotSize > player.playerSize) {
+            shouldReset = true;
+          } else {
+            player.scorePoint();
+            child.removeFromParent();
+          }
+        }
+      }
+    }
   }
 }
 
-class PlayerDot extends PositionComponent with HasHitboxes, Collidable {
+class PlayerDot extends PositionComponent /* with HasHitboxes, Collidable */ {
   static final Paint _white = BasicPalette.white.paint();
 
   HitboxCircle hitbox;
@@ -66,33 +90,22 @@ class PlayerDot extends PositionComponent with HasHitboxes, Collidable {
   PlayerDot(this.playerSize)
       : hitbox = HitboxCircle(normalizedRadius: playerSize as double),
         super() {
-    addHitbox(hitbox);
+    //addHitbox(hitbox);
   }
 
   void scorePoint() {
     this.playerSize++;
-    hitbox.normalizedRadius = playerSize as double;
+    //hitbox.normalizedRadius = playerSize as double;
   }
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    canvas.drawCircle(Offset.zero, 20.0, _white);
-  }
-
-  @override
-  void onCollision(Set<Vector2> points, Collidable other) {
-    super.onCollision(points, other);
-    print("collided: {other}");
-    if (other is Dot) {
-      if (other.dotSize <= playerSize) {
-        other.removeFromParent();
-      }
-    }
+    canvas.drawCircle(Offset.zero, playerSize as double, _white);
   }
 }
 
-class Dot extends PositionComponent with HasHitboxes, Collidable {
+class Dot extends PositionComponent {
   static final Paint _white = BasicPalette.white.paint();
   static final List<double> _sizes = [30, 10, -2];
   Vector2 velocity = Vector2.zero();
@@ -103,10 +116,10 @@ class Dot extends PositionComponent with HasHitboxes, Collidable {
     // allow angles to vary
 
     var rng = Random();
-    dotSize = dependentSize += _sizes[rng.nextInt(2)];
-    addHitbox(HitboxCircle(normalizedRadius: dotSize));
+    dotSize = dependentSize += _sizes[rng.nextInt(3)];
+    //addHitbox(HitboxCircle(normalizedRadius: dotSize));
 
-    var num = rng.nextInt(3);
+    var num = rng.nextInt(4);
     var launchAngle = num * pi / 2.0;
     launchAngle += (rng.nextDouble() * 2.0 - 1.0) * (pi / 3.0);
     this.velocity = Vector2(cos(launchAngle), sin(launchAngle)) * 50;
@@ -146,8 +159,6 @@ class Dot extends PositionComponent with HasHitboxes, Collidable {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    //renderDebugMode(canvas);
-    renderHitboxes(canvas);
     canvas.drawCircle(Offset.zero, dotSize, _white);
   }
 }
