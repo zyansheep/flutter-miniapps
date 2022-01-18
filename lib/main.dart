@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flame/game.dart';
 // import 'package:flutter/rendering.dart';
 
 import 'mobile_disco/mobile_disco.dart';
 import 'add_things/add_things.dart';
 import 'auto_survey/auto_survey.dart';
 import 'categorizer/categorizer.dart';
+import 'eadot/eadot.dart';
 
 void main() {
   runApp(MyApp());
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/add_things': (context) => AddThingsPage(),
         '/auto_survey': (context) => AutoSurveyPage(),
         '/categorizer': (context) => Categorizer(),
+        '/eadot_game': (context) => GameWidget(game: EadotGame()),
       },
       /* home: MobileDiscoPage(title: 'Flutter Demo Home Page'), */
     );
@@ -75,6 +78,12 @@ class HomePage extends StatelessWidget {
             child: Text('Image Categorizer'),
             onPressed: () {
               Navigator.pushNamed(context, '/categorizer');
+            },
+          ),
+          ElevatedButton(
+            child: Text('Eadot Game'),
+            onPressed: () {
+              Navigator.pushNamed(context, '/eadot_game');
             },
           ),
         ],
